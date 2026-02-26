@@ -1,0 +1,5 @@
+allowed_language: python
+timeout_seconds: 30
+allowed_paths:
+  - sandbox/runtime
+  - scripts
