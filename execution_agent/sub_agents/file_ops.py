@@ -1,7 +1,3 @@
-"""
-Sub-Agent: file_ops
-Handles rollback (cleanup) of any files created during a failed run.
-"""
 import logging
 import os
 

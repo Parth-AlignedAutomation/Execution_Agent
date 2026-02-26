@@ -1,7 +1,3 @@
-"""
-Sub-Agent: audit
-Marks the workflow as COMPLETED and writes a final audit entry.
-"""
 import logging
 from datetime import datetime, timezone
 
