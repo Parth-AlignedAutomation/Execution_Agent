@@ -1,12 +1,3 @@
-"""
-scripts/generate_report.py
-──────────────────────────
-Reads the raw sales CSV produced by the DB executor and writes a
-summary report CSV.
-
-Usage (called by the script_executor sub-agent):
-    python scripts/generate_report.py <input_csv> <output_csv>
-"""
 import csv
 import sys
 from datetime import datetime
