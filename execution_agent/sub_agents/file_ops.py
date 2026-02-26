@@ -1,3 +1,7 @@
+"""
+Sub-Agent: file_ops
+Handles rollback (cleanup) of any files created during a failed run.
+"""
 import logging
 import os
 
@@ -5,14 +9,19 @@ from execution_agent.state import WorkflowState
 
 logger = logging.getLogger(__name__)
 
+
 def rollback_node(state: WorkflowState) -> WorkflowState:
+    """
+    LangGraph node — deletes all files recorded in state['files_created'].
+    Called automatically on the FAILED branch of the graph.
+    """
     logger.warning("[Rollback] Initiating rollback for failed workflow.")
     deleted, missing = [], []
 
-    for path in state["files_created"]:
+    for path in state.get("files_created", []):
         try:
             os.remove(path)
-            deleted.appned(path)
+            deleted.append(path)
             logger.info("  Deleted: %s", path)
         except FileNotFoundError:
             missing.append(path)
@@ -26,7 +35,7 @@ def rollback_node(state: WorkflowState) -> WorkflowState:
 
     return {
         **state,
-        "files_created": [],         
-        "logs":          state["logs"] + [msg],
+        "files_created": [],
+        "logs":          state.get("logs", []) + [msg],
         "last_step_output": msg,
     }

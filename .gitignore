@@ -1,2 +1,4 @@
-\venv
+venv/
 test.ipynb
+execution_agent/__pycache__/
+planner_agent/__pycache__/

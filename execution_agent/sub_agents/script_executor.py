@@ -1,11 +1,16 @@
+
 import logging
 import os
+import subprocess
+
 from execution_agent.policy import EXECUTION_POLICY, SCRIPT_POLICY
 from execution_agent.state import WorkflowState
-import subprocess
+
 logger = logging.getLogger(__name__)
 
+
 def _check_paths(*paths: str) -> None:
+    """Raise ValueError if any path escapes the allowed directories."""
     allowed = SCRIPT_POLICY["allowed_paths"]
     for p in paths:
         normalised = os.path.normpath(p)
@@ -13,10 +18,15 @@ def _check_paths(*paths: str) -> None:
             raise ValueError(
                 f"Path '{p}' is outside allowed directories: {allowed}"
             )
-        
+
+
 def script_executor_node(state: WorkflowState) -> WorkflowState:
-    idx = state["current_step_index"]
-    step = state["workflow"]["step"][idx]
+    """
+    Handles a single 'script_execution' step.
+    Runs the script and records output files in state.
+    """
+    idx  = state["current_step_index"]
+    step = state["workflow"]["steps"][idx]
 
     script_path  = os.path.join("scripts", step["script"])
     input_args   = step.get("inputs", [])
@@ -45,8 +55,8 @@ def script_executor_node(state: WorkflowState) -> WorkflowState:
 
         return {
             **state,
-            "files_created":    state["files_created"] + new_files,
-            "logs":             state["logs"] + [msg],
+            "files_created":    state.get("files_created", []) + new_files,
+            "logs":             state.get("logs", []) + [msg],
             "last_step_output": msg,
             "current_step_index": idx + 1,
             "error": None,
@@ -61,4 +71,3 @@ def script_executor_node(state: WorkflowState) -> WorkflowState:
         msg = f"[Script Executor] Step {idx} failed: {exc}"
         logger.exception(msg)
         return {**state, "status": "FAILED", "error": msg}
-
