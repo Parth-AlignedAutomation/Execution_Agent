@@ -9,7 +9,7 @@ logging.basicConfig(
     datefmt = "%H:%M:%S"
 )
 
-from planner_agent import run_pipline
+from planner_agent.planner_agent import run_pipeline
 from execution_agent.execution import execution_graph
 
 
