@@ -1,7 +1,7 @@
 import logging
 import os
 import subprocess
-import sys                          # ← used to get the current venv's Python
+import sys                    
 
 from execution_agent.policy import EXECUTION_POLICY, SCRIPT_POLICY
 from execution_agent.state import WorkflowState
@@ -33,8 +33,7 @@ def script_executor_node(state: WorkflowState) -> WorkflowState:
     try:
         _check_paths(script_path, *input_args, *output_files)
 
-        # ✅ Use sys.executable so the subprocess runs inside the same venv
-        # "python" would use the system Python which may not have dependencies
+        
         cmd = [sys.executable, script_path] + input_args + output_files
 
         subprocess.run(
