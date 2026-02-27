@@ -1,6 +1,7 @@
 import logging
 import os
 import subprocess
+import sys                          # ← used to get the current venv's Python
 
 from execution_agent.policy import EXECUTION_POLICY, SCRIPT_POLICY
 from execution_agent.state import WorkflowState
@@ -20,10 +21,6 @@ def _check_paths(*paths: str) -> None:
 
 
 def script_executor_node(state: WorkflowState) -> WorkflowState:
-    """
-    Handles a single 'script_execution' step.
-    Runs the script and records output files in state.
-    """
     idx  = state["current_step_index"]
     step = state["workflow"]["steps"][idx]
 
@@ -36,7 +33,9 @@ def script_executor_node(state: WorkflowState) -> WorkflowState:
     try:
         _check_paths(script_path, *input_args, *output_files)
 
-        cmd = ["python", script_path] + input_args + output_files
+        # ✅ Use sys.executable so the subprocess runs inside the same venv
+        # "python" would use the system Python which may not have dependencies
+        cmd = [sys.executable, script_path] + input_args + output_files
 
         subprocess.run(
             cmd,
@@ -45,7 +44,8 @@ def script_executor_node(state: WorkflowState) -> WorkflowState:
         )
 
         new_files = [
-            os.path.join(EXECUTION_POLICY["sandbox_dir"], f) if not f.startswith(EXECUTION_POLICY["sandbox_dir"]) else f
+            os.path.join(EXECUTION_POLICY["sandbox_dir"], f)
+            if not f.startswith(EXECUTION_POLICY["sandbox_dir"]) else f
             for f in output_files
         ]
 
@@ -54,9 +54,9 @@ def script_executor_node(state: WorkflowState) -> WorkflowState:
 
         return {
             **state,
-            "files_created":    state.get("files_created", []) + new_files,
-            "logs":             state.get("logs", []) + [msg],
-            "last_step_output": msg,
+            "files_created":      state.get("files_created", []) + new_files,
+            "logs":               state.get("logs", []) + [msg],
+            "last_step_output":   msg,
             "current_step_index": idx + 1,
             "error": None,
         }
@@ -70,3 +70,9 @@ def script_executor_node(state: WorkflowState) -> WorkflowState:
         msg = f"[Script Executor] Step {idx} failed: {exc}"
         logger.exception(msg)
         return {**state, "status": "FAILED", "error": msg}
+
+
+
+
+
+

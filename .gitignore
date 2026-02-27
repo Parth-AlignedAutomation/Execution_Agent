@@ -3,3 +3,4 @@ test.ipynb
 execution_agent/__pycache__/
 planner_agent/__pycache__/
 graph.html
+.env

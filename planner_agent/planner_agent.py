@@ -14,29 +14,30 @@ logger = logging.getLogger(__name__)
 class PlannerState(TypedDict):
     objective: str                    # Human-readable goal (unused in hardcoded mode)
     workflow:  Dict[str, Any]         # Produced by plan_node
-    result:    WorkflowState | None   # Final state returned by execution_graph
-
-
+    result:    Any   # Final state returned by execution_graph
 
 
 HARDCODED_WORKFLOW = {
     "workflow_id": "report-001",
     "steps": [
         {
-            "type":   "database_read",
-            "query":  "SELECT date, revenue FROM sales LIMIT 100",
-            "output": "sales_raw.csv",
-        },
-        {
+            # generate_report.py now handles:
+            #   - DB connection & data fetch
+            #   - LLM report generation via Langfuse prompt
+            #   - Saving CSV  (arg 1)
+            #   - Saving PDF  (arg 2)
             "type":    "script_execution",
             "script":  "generate_report.py",
-            "inputs":  ["sandbox/runtime/sales_raw.csv"],
-            "outputs": ["sandbox/runtime/sales_report.csv"],
+            "inputs":  [],
+            "outputs": [
+                "sandbox/runtime/sales_raw.csv",
+                "sandbox/runtime/sales_report.pdf",
+            ],
         },
         {
             "type":       "notification",
             "to":         ["team@example.com"],
-            "attachment": "sandbox/runtime/sales_report.csv",
+            "attachment": "sandbox/runtime/sales_report.pdf",
         },
     ],
 }
