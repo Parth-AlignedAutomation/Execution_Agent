@@ -1,8 +1,3 @@
-# clients/api_only/config.yaml
-# ─────────────────────────────
-# Client that fetches data from an external REST API
-# and runs a script — NO database involved at all.
-
 client_id:   api_only
 description: Fetch data from REST API and process with script
 

@@ -1,8 +1,3 @@
-# clients/script_only/config.yaml
-# ─────────────────────────────────
-# Simplest possible client — just runs one script.
-# No database, no API, no notification.
-
 client_id:   script_only
 description: Just run a Python script
 

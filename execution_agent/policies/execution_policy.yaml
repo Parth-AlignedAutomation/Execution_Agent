@@ -1,0 +1,5 @@
+allowed_step_types:
+  - database_read
+  - script_execution
+  - notification
+sandbox_dir: sandbox/runtime
