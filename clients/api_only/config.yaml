@@ -1,0 +1,30 @@
+# clients/api_only/config.yaml
+# ─────────────────────────────
+# Client that fetches data from an external REST API
+# and runs a script — NO database involved at all.
+
+client_id:   api_only
+description: Fetch data from REST API and process with script
+
+sandbox_dir: sandbox/runtime
+scripts_dir: scripts
+
+steps:
+
+  - id:      fetch_data
+    type:    http_request
+    adapter: rest
+    url:     "https://api.example.com/sales"
+    method:  GET
+    headers:
+      Authorization: "Bearer ${API_KEY}"
+    output:  api_data.json
+
+  - id:     process_data
+    type:   script_execution
+    runner: python
+    script: process_api_data.py
+    inputs: [sandbox/runtime/api_data.json]
+    outputs:
+      - sandbox/runtime/processed_report.pdf
+    timeout: 120

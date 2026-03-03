@@ -1,0 +1,42 @@
+# clients/sales_report/config.yaml
+# ─────────────────────────────────
+# This is the ONLY file you need to change per client.
+# The execution engine reads this and builds the LangGraph
+# pipeline dynamically — only the steps listed here will run.
+
+client_id:   sales_report
+description: Fetch sales data from NeonDB and generate PDF report
+
+# ── Sandbox ───────────────────────────────────────────────────────────────────
+sandbox_dir: sandbox/runtime
+scripts_dir: scripts
+
+# ── Steps ─────────────────────────────────────────────────────────────────────
+# Only the step types listed here will be included in the graph.
+# Remove a step → that handler is never loaded or executed.
+# Reorder steps → execution order changes accordingly.
+
+steps:
+
+  - id:     fetch_sales
+    type:   database_read
+    engine: postgres
+    connection_url: $Neon_URL
+    query:  "SELECT date, revenue FROM sales LIMIT 100"
+    output: sales_raw.csv
+
+  - id:     generate_report
+    type:   script_execution
+    runner: python
+    script: generate_report.py
+    inputs: []
+    outputs:
+      - sandbox/runtime/sales_raw.csv
+      - sandbox/runtime/sales_report.pdf
+    timeout: 300
+
+  - id:      send_notification
+    type:    notification
+    channel: slack
+    webhook_url: $SLACK_WEBHOOK_URL
+    message: "Sales report is ready!"

@@ -1,0 +1,21 @@
+# clients/script_only/config.yaml
+# ─────────────────────────────────
+# Simplest possible client — just runs one script.
+# No database, no API, no notification.
+
+client_id:   script_only
+description: Just run a Python script
+
+sandbox_dir: sandbox/runtime
+scripts_dir: scripts
+
+steps:
+
+  - id:     run_script
+    type:   script_execution
+    runner: python
+    script: my_script.py
+    inputs: []
+    outputs:
+      - sandbox/runtime/output.csv
+    timeout: 60
