@@ -1,0 +1,42 @@
+allowed_commands:
+  - SELECT
+  - WITH
+
+
+dangerous_keywords:
+  - DROP
+  - DELETE
+  - INSERT
+  - UPDATE
+  - TRUNCATE
+  - ALTER
+  - CREATE
+  - REPLACE
+  - MERGE
+  - UPSERT
+  - EXEC
+  - EXECUTE
+  - CALL
+  - GRANT
+  - REVOKE
+  - ATTACH
+  - DETACH
+  - PRAGMA
+  - VACUUM
+  - COPY
+  - INTO          
+  - INFORMATION_SCHEMA  
+  - PG_CATALOG          
+  - PG_SLEEP            
+
+
+require_limit: true
+
+
+max_limit_value: 1000
+
+
+block_multiple_statements: true
+
+
+strip_comments: true
