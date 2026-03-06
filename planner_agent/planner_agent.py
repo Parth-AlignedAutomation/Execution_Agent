@@ -1,10 +1,3 @@
-"""
-planner_agent/planner_agent.py
-───────────────────────────────
-Planner Agent — decides WHAT needs to be executed.
-Execution Agent — runs WHAT planner decided.
-"""
-
 import logging
 from typing import TypedDict, Any, Dict
 
