@@ -36,7 +36,7 @@ USECASE_DIR = Path(__file__).parent.parent           # test_agent/usecase2/
 SANDBOX_DIR = USECASE_DIR / "sandbox" / "runtime"    # test_agent/usecase2/sandbox/runtime/
 
 # City to fetch weather for — change as needed
-CITY = "Mumbai"
+CITY = "Pune"
 
 
 class PlannerState(TypedDict):
@@ -73,19 +73,25 @@ def plan_node(state: PlannerState) -> PlannerState:
                 "sandbox_dir": str(SANDBOX_DIR),
             },
 
-            # Step 2 — Notify Slack with weather summary
-            # Message is hardcoded here (LLM would build this dynamically later)
-            # {
-            #     "id":          "notify_slack",
-            #     "type":        "notification",         # → NotificationHandler
-            #     "channel":     "slack",                # → Slack adapter
-            #     "webhook_url": "${SLACK_WEBHOOK_URL}", # resolved from .env
-            #     "message":     (
-            #         f"🌤 Weather Report — {CITY}\n"
-            #         f"Fetched via OpenWeatherMap API.\n"
-            #         f"Raw data saved to: sandbox/runtime/weather_raw.json"
-            #     ),
-            # },
+            {
+                "id":      "send_email_report",
+                "type":    "notification",     # → NotificationHandler
+                "channel": "email",            # → email sender
+
+                "to": ["nishantwankhede24@gmail.com"],
+
+                "subject": f"Weather Report — {CITY}",
+
+                "message": (
+                    f"🌤 Weather Report — {CITY}\n\n"
+                    f"Weather data fetched successfully from OpenWeatherMap.\n"
+                    f"The raw JSON report is attached."
+                ),
+
+            "attachments": [
+                f"{SANDBOX_DIR}/weather_raw.json"
+            ]
+        }
 
         ]
     }

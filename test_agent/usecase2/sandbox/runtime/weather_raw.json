@@ -1,44 +1,44 @@
 {
   "coord": {
-    "lon": 72.8479,
-    "lat": 19.0144
+    "lon": 73.8553,
+    "lat": 18.5196
   },
   "weather": [
     {
-      "id": 802,
+      "id": 803,
       "main": "Clouds",
-      "description": "scattered clouds",
-      "icon": "03d"
+      "description": "broken clouds",
+      "icon": "04d"
     }
   ],
   "base": "stations",
   "main": {
-    "temp": 28.05,
-    "feels_like": 29.75,
-    "temp_min": 28.05,
-    "temp_max": 28.05,
-    "pressure": 1007,
-    "humidity": 62,
-    "sea_level": 1007,
-    "grnd_level": 1007
+    "temp": 34.88,
+    "feels_like": 32.25,
+    "temp_min": 34.88,
+    "temp_max": 34.88,
+    "pressure": 1008,
+    "humidity": 11,
+    "sea_level": 1008,
+    "grnd_level": 936
   },
   "visibility": 10000,
   "wind": {
-    "speed": 9.08,
-    "deg": 315,
-    "gust": 10.93
+    "speed": 3.9,
+    "deg": 55,
+    "gust": 4.76
   },
   "clouds": {
-    "all": 28
+    "all": 62
   },
-  "dt": 1772794102,
+  "dt": 1772796776,
   "sys": {
     "country": "IN",
-    "sunrise": 1772760274,
-    "sunset": 1772802940
+    "sunrise": 1772760020,
+    "sunset": 1772802711
   },
   "timezone": 19800,
-  "id": 1275339,
-  "name": "Mumbai",
+  "id": 1259229,
+  "name": "Pune",
   "cod": 200
 }
