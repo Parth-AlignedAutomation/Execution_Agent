@@ -78,7 +78,7 @@ def plan_node(state: PlannerState) -> PlannerState:
                 "type":    "notification",     # → NotificationHandler
                 "channel": "email",            # → email sender
 
-                "to": ["nishantwankhede24@gmail.com"],
+                "to": ["parthkadoo004@gmail.com"],
 
                 "subject": f"Weather Report — {CITY}",
 
