@@ -1,7 +1,15 @@
+"""
+planner_agent/planner_agent.py
+───────────────────────────────
+Planner Agent — decides WHAT needs to be executed.
+Execution Agent — runs WHAT planner decided.
+"""
+
 import logging
 from typing import TypedDict, Any, Dict
 
 from langgraph.graph import StateGraph, END
+
 logger = logging.getLogger(__name__)
 
 
@@ -21,7 +29,17 @@ def plan_node(state: PlannerState) -> PlannerState:
         "description": instruction,
         "steps": [
 
-            # ✅ ONLY script execution — database and notification removed
+            # Step 1 — Fetch data from NeonDB
+            {
+                "id":             "fetch_sales_data",
+                "type":           "database_read",
+                "engine":         "postgres",
+                "connection_url": "$Neon_URL",
+                "query":          "SELECT date, SUM(total_amount) AS total_sales, COUNT(*) AS total_orders FROM orders GROUP BY date ORDER BY date DESC LIMIT 100",
+                "output":         "sales_raw.csv",
+            },
+
+            # Step 2 — Run script to generate report
             {
                 "id":      "generate_report",
                 "type":    "script_execution",
