@@ -30,11 +30,11 @@ registry = HandlerRegistry()
 
 def load_all_handler() -> None:
 
-    import handlers.database_handler     # noqa
-    import handlers.script_handler       # noqa
-    import handlers.api_handler          # noqa
-    import handlers.notification_handler # noqa
-    import handlers.file_handler         # noqa
+    import execution_agent.handlers.database_handler     # noqa
+    import execution_agent.handlers.script_handler       # noqa
+    import execution_agent.handlers.api_handler          # noqa
+    import execution_agent.handlers.notification_handler # noqa
+    import execution_agent.handlers.file_handler         # noqa
 
 
     logger.info("[Registry] Loaded handlers: %s", registry.available())

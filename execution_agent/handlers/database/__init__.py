@@ -1,4 +1,4 @@
-from handlers.database import mongodb, mysql, bigquery, sqlite, postgres
+from execution_agent.handlers.database import mongodb, mysql, bigquery, sqlite, postgres
 
 _MODULES = [postgres, mongodb, mysql, bigquery, sqlite]
 DB_ENGINES = {}

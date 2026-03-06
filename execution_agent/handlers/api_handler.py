@@ -11,7 +11,8 @@ from execution_agent.handlers.registry import registry
 logger      = logging.getLogger(__name__)
 SANDBOX_DIR = os.getenv("SANDBOX_DIR", "sandbox/runtime")
 
-#helpers
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _resolve_env(value) -> str:
     """Replace ${VAR} or $VAR with actual env values."""
@@ -27,12 +28,24 @@ def _resolve_headers(headers: dict) -> dict:
     return {k: _resolve_env(v) for k, v in headers.items()}
 
 
+# ══════════════════════════════════════════════════════════════════════════════
+# API_ADAPTERS — single config dict for ALL API types.
+#
+# Each entry:
+#   "adapter_name": {
+#       "call": callable(config) → (status_code, response_data)
+#   }
+# ══════════════════════════════════════════════════════════════════════════════
+
+def _resolve_params(params: dict) -> dict:
+    """Resolve env vars in all param values."""
+    return {k: _resolve_env(v) for k, v in params.items()}
 
 def _rest_call(config: dict):
     url     = _resolve_env(config.get("url", ""))
     method  = config.get("method", "GET").upper()
     headers = _resolve_headers(config.get("headers", {}))
-    params  = config.get("params", {})
+    params  = _resolve_params(config.get("params", {}))
     body    = config.get("body", None)
     timeout = int(config.get("timeout", 30))
 
@@ -85,7 +98,19 @@ API_ADAPTERS = {
         "call": _graphql_call,
     },
 
+    # ── ADD NEW API ADAPTER HERE ──────────────────────────────────────────────
+    # "soap": {
+    #     "call": _soap_call,
+    # },
+    # "grpc": {
+    #     "call": _grpc_call,
+    # },
 }
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Handler
+# ══════════════════════════════════════════════════════════════════════════════
 
 class APIHandler(BaseHandler):
 
@@ -112,8 +137,9 @@ class APIHandler(BaseHandler):
             status_code, response_data = adapter_cfg["call"](step)
 
             output_file = step.get("output", "api_response.json")
-            output_path = os.path.join(SANDBOX_DIR, output_file)
-            os.makedirs(SANDBOX_DIR, exist_ok=True)
+            sandbox     = step.get("sandbox_dir", SANDBOX_DIR)  # usecase can override
+            output_path = os.path.join(sandbox, output_file)
+            os.makedirs(sandbox, exist_ok=True)
 
             with open(output_path, "w", encoding="utf-8") as f:
                 if isinstance(response_data, (dict, list)):
