@@ -5,7 +5,7 @@ import yaml
 from langgraph.graph import StateGraph, END
 
 from execution_agent.state import WorkflowState
-from handlers.registry import load_all_handler, registry
+from execution_agent.handlers.registry import load_all_handler, registry
 
 logger = logging.getLogger(__name__)
 

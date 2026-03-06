@@ -1,6 +1,6 @@
 import logging
 from typing import Dict
-from handlers.base_handler import BaseHandler
+from execution_agent.handlers.base_handler import BaseHandler
 
 logger = logging.getLogger(__name__)
 

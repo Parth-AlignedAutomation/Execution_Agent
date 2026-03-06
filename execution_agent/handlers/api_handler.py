@@ -5,8 +5,8 @@ import re
 
 import requests
 
-from handlers.base_handler import BaseHandler
-from handlers.registry import registry
+from execution_agent.handlers.base_handler import BaseHandler
+from execution_agent.handlers.registry import registry
 
 logger      = logging.getLogger(__name__)
 SANDBOX_DIR = os.getenv("SANDBOX_DIR", "sandbox/runtime")

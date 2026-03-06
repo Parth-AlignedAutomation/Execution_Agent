@@ -3,9 +3,9 @@ import logging
 import os
 import json
 
-from handlers.base_handler import BaseHandler
-from handlers.registry import registry
-from handlers.database import DB_ENGINES
+from execution_agent.handlers.base_handler import BaseHandler
+from execution_agent.handlers.registry import registry
+from execution_agent.handlers.database import DB_ENGINES
 logger = logging.getLogger(__name__)
 SANDBOX_DIR = os.getenv("SANDBOX_DIR", "sandbox/runtime")
 

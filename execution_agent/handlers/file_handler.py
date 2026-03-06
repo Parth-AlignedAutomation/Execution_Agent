@@ -2,8 +2,8 @@ import logging
 import os
 import shutil
 
-from handlers.base_handler import BaseHandler
-from handlers.registry import registry
+from execution_agent.handlers.base_handler import BaseHandler
+from execution_agent.handlers.registry import registry
 
 logger = logging.getLogger(__name__)
 

@@ -9,3 +9,4 @@ reportlab>=4.0.0
 python-abc
 pymongo
 mysql-connector-python
+boto3
