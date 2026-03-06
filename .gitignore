@@ -2,5 +2,4 @@ venv/
 .env
 test.py
 execution.zip
-main.py
 
