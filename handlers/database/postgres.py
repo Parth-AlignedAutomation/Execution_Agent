@@ -37,4 +37,4 @@ ENGINE = {
     "output_format": "csv",
 }
 
-ALIASES = ["postgres", "neon"]
+ALIASES = ["postgresql", "neon"]

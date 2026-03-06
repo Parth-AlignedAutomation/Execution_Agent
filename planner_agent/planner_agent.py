@@ -35,7 +35,7 @@ def plan_node(state: PlannerState) -> PlannerState:
                 "type":           "database_read",
                 "engine":         "postgres",
                 "connection_url": "$Neon_URL",
-                "query":          "SELECT date, SUM(total_amount) AS total_sales, COUNT(*) AS total_orders FROM orders GROUP BY date ORDER BY date DESC LIMIT 100",
+                "query":          "SELECT date, revenue FROM sales LIMIT 100",
                 "output":         "sales_raw.csv",
             },
 
