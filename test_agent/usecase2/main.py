@@ -53,29 +53,29 @@ def _print_result(client_id: str, steps: list, description: str, final: dict):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Usecase2 — Weather API + Slack Notification")
-    parser.add_argument(
-        "--instruction",
-        required=True,
-        help='e.g. "Fetch weather data for Mumbai and notify team"',
-    )
-    parser.add_argument(
-        "--visualise",
-        action="store_true",
-        help="Print LangGraph Mermaid diagram and exit.",
-    )
-    args = parser.parse_args()
+    # parser = argparse.ArgumentParser(description="Usecase2 — Weather API + Slack Notification")
+    # parser.add_argument(
+    #     "--instruction",
+    #     required=True,
+    #     help='e.g. "Fetch weather data for Mumbai and notify team"',
+    # )
+    # parser.add_argument(
+    #     "--visualise",
+    #     action="store_true",
+    #     help="Print LangGraph Mermaid diagram and exit.",
+    # )
+    # args = parser.parse_args()
 
     from planner_agent.planner_agent import planner_graph
 
-    print(f"\n[Usecase2] Instruction: '{args.instruction}'")
+    # print(f"\n[Usecase2] Instruction: '{args.instruction}'")
 
-    if args.visualise:
-        print(planner_graph.get_graph().draw_mermaid())
-        sys.exit(0)
+    # if args.visualise:
+    #     print(planner_graph.get_graph().draw_mermaid())
+    #     sys.exit(0)
 
     result = planner_graph.invoke({
-        "instruction": args.instruction,
+        "instruction": "Fetching weather data for Mumbai and notifying the team via Email.",
         "workflow":    {},
         "result":      None,
     })
@@ -86,7 +86,7 @@ def main():
     _print_result(
         client_id   = workflow.get("client_id", "unknown"),
         steps       = [s["type"] for s in workflow.get("steps", [])],
-        description = args.instruction,
+        description = "Fetching weather data for Mumbai and notifying the team via Email.",
         final       = final,
     )
 
