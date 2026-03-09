@@ -95,11 +95,6 @@ def _onedrive_token(config: dict) -> str:
 
 
 def _onedrive_upload(local_path: str, destination: str, config: dict) -> str:
-    """
-    Upload a file to OneDrive using Microsoft Graph API.
-    destination = path inside OneDrive, e.g. "reports/expenses.csv"
-    Returns the OneDrive web URL of the uploaded file.
-    """
     import requests as _requests
     token    = _onedrive_token(config)
     headers  = {"Authorization": f"Bearer {token}", "Content-Type": "application/octet-stream"}
@@ -121,10 +116,6 @@ def _onedrive_upload(local_path: str, destination: str, config: dict) -> str:
 
 
 def _onedrive_download(source: str, local_path: str, config: dict) -> str:
-    """
-    Download a file from OneDrive using Microsoft Graph API.
-    source = path inside OneDrive, e.g. "reports/expenses.csv"
-    """
     import requests as _requests
     token    = _onedrive_token(config)
     headers  = {"Authorization": f"Bearer {token}"}
