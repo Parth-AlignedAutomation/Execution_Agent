@@ -70,6 +70,83 @@ def _gcs_download(source: str, local_path: str, config: dict) -> str:
     return local_path
 
 
+def _onedrive_token(config: dict) -> str:
+    import requests as _requests
+    tenant_id     = config.get("tenant_id")     or os.getenv("ONEDRIVE_TENANT_ID", "")
+    client_id     = config.get("client_id")     or os.getenv("ONEDRIVE_CLIENT_ID", "")
+    client_secret = config.get("client_secret") or os.getenv("ONEDRIVE_CLIENT_SECRET", "")
+
+    if not all([tenant_id, client_id, client_secret]):
+        raise ValueError(
+            "OneDrive: ONEDRIVE_TENANT_ID, ONEDRIVE_CLIENT_ID, "
+            "ONEDRIVE_CLIENT_SECRET must be set in .env"
+        )
+
+    url  = f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"
+    data = {
+        "grant_type":    "client_credentials",
+        "client_id":     client_id,
+        "client_secret": client_secret,
+        "scope":         "https://graph.microsoft.com/.default",
+    }
+    resp = _requests.post(url, data=data, timeout=30)
+    resp.raise_for_status()
+    return resp.json()["access_token"]
+
+
+def _onedrive_upload(local_path: str, destination: str, config: dict) -> str:
+    """
+    Upload a file to OneDrive using Microsoft Graph API.
+    destination = path inside OneDrive, e.g. "reports/expenses.csv"
+    Returns the OneDrive web URL of the uploaded file.
+    """
+    import requests as _requests
+    token    = _onedrive_token(config)
+    headers  = {"Authorization": f"Bearer {token}", "Content-Type": "application/octet-stream"}
+    filename = destination.lstrip("/")
+
+    # Use /me/drive for personal OneDrive, or /drives/{drive_id} for SharePoint
+    drive_id = config.get("drive_id") or os.getenv("ONEDRIVE_DRIVE_ID", "")
+    if drive_id:
+        url = f"https://graph.microsoft.com/v1.0/drives/{drive_id}/root:/{filename}:/content"
+    else:
+        url = f"https://graph.microsoft.com/v1.0/me/drive/root:/{filename}:/content"
+
+    with open(local_path, "rb") as f:
+        resp = _requests.put(url, headers=headers, data=f, timeout=120)
+    resp.raise_for_status()
+
+    web_url = resp.json().get("webUrl", url)
+    return web_url
+
+
+def _onedrive_download(source: str, local_path: str, config: dict) -> str:
+    """
+    Download a file from OneDrive using Microsoft Graph API.
+    source = path inside OneDrive, e.g. "reports/expenses.csv"
+    """
+    import requests as _requests
+    token    = _onedrive_token(config)
+    headers  = {"Authorization": f"Bearer {token}"}
+    filename = source.lstrip("/")
+
+    drive_id = config.get("drive_id") or os.getenv("ONEDRIVE_DRIVE_ID", "")
+    if drive_id:
+        url = f"https://graph.microsoft.com/v1.0/drives/{drive_id}/root:/{filename}:/content"
+    else:
+        url = f"https://graph.microsoft.com/v1.0/me/drive/root:/{filename}:/content"
+
+    resp = _requests.get(url, headers=headers, timeout=120)
+    resp.raise_for_status()
+
+    os.makedirs(os.path.dirname(os.path.abspath(local_path)), exist_ok=True)
+    with open(local_path, "wb") as f:
+        f.write(resp.content)
+    return local_path
+
+
+
+
 FILE_STORAGES = {
     "local": {
         "upload":   _local_upload,
@@ -85,6 +162,12 @@ FILE_STORAGES = {
         "upload":   _gcs_upload,
         "download": _gcs_download,
         "requires": "google-cloud-storage — pip install google-cloud-storage",
+    },
+    
+    "onedrive": {
+        "upload":   _onedrive_upload,
+        "download": _onedrive_download,
+        "requires": "requests (already installed) + Azure App Registration",
     },
 }
 
