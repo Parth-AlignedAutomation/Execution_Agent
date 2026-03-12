@@ -1,0 +1,5 @@
+allowed_commands:
+  - SELECT
+  - WITH
+require_limit: true
+max_rows: 1000
